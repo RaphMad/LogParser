@@ -11,8 +11,11 @@ cabal-version:          >= 1.22
 
 library
    exposed-modules:     LogParser
-   build-depends:       base
+   build-depends:       base,
+                        attoparsec,
+                        time
    hs-source-dirs:      src\lib
+   ghc-options:         -Wall -fno-warn-unused-do-bind
    default-language:    Haskell2010
 
 executable LogParser
@@ -20,6 +23,7 @@ executable LogParser
    build-depends:       base,
                         LogParser
    hs-source-dirs:      src\main
+   ghc-options:         -Wall -fno-warn-unused-do-bind
    default-language:    Haskell2010
 
 test-suite LogParserSpec
@@ -28,5 +32,9 @@ test-suite LogParserSpec
    hs-source-dirs:      src\test
    build-depends:       base,
                         LogParser,
-                        hspec
+                        hspec,
+                        attoparsec,
+                        hspec-attoparsec,
+                        bytestring
+   ghc-options:         -Wall -fno-warn-unused-do-bind
    default-language:    Haskell2010
