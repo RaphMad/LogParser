@@ -1,10 +1,12 @@
 module Main where
 
-import Data.ByteString.Char8
 import Data.Attoparsec.ByteString.Char8
+import Data.ByteString.Char8
+import Data.Time.LocalTime
 import LogParser
 import Test.Hspec
 import Test.Hspec.Attoparsec
+import Test.QuickCheck
 
 main :: IO ()
 main = hspec $ do
@@ -24,6 +26,11 @@ main = hspec $ do
 
       it "fails on wrong time" $
          time `failsOn` "04:04error,407"
+
+      it "parses milliseconds exactly" $ property $
+         \ms -> (ms :: Int) >= 0 && ms < 1000 ==>
+         pack ("04:04:54," ++ show ms) ~> time
+         `parseSatisfies` ((== ms) . (`rem` 1000) . truncate  . (* 1000) . todSec)
 
    describe "timeStamp parser" $ do
 
