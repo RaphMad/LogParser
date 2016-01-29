@@ -32,9 +32,9 @@ main = hspec $ do
 
       it "succeeds on correct dateTime with appendix" $
          timeStamp `succeedsOn` "04.01.2016 04:04:54,407appendix"
-         
+
       it "fails on wrong dateTime" $
-         timeStamp `succeedsOn` "04.01.2016error 04:04:54,407"
+         timeStamp `failsOn` "04.01.2016error 04:04:54,407"
 
 succeedsOn :: Show a => Parser a -> String -> Expectation
 succeedsOn p s = p `shouldSucceedOn` pack s
