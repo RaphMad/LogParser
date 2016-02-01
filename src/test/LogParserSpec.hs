@@ -1,12 +1,12 @@
 module Main where
 
 import Data.Attoparsec.ByteString.Char8
-import Data.ByteString.Char8
+import Data.ByteString.Char8 as BS hiding (all)
+import Data.Either.Unwrap
 import Data.Time.LocalTime
 import LogParser
 import Test.Hspec
 import Test.Hspec.Attoparsec
-import Test.QuickCheck
 
 main :: IO ()
 main = hspec $ do
@@ -27,10 +27,12 @@ main = hspec $ do
       it "fails on wrong time" $
          time `failsOn` "04:04error,407"
 
-      it "parses milliseconds exactly" $ property $
-         \ms -> (ms :: Int) >= 0 && ms < 1000 ==>
-         pack ("04:04:54," ++ show ms) ~> time
-         `parseSatisfies` ((== ms) . (`rem` 1000) . truncate  . (* 1000) . todSec)
+      it "parses milliseconds exactly" $
+         let checkMilli = all (\ms -> flip check (ms :: Int) . parseInput . input $ ms)
+             input = BS.pack . ("04:04:54," ++) . show
+             parseInput = fromRight . parseOnly time
+             check = ((==) . (`rem` 1000) . truncate  . (* 1000) . todSec)
+         in [0..999] `shouldSatisfy` checkMilli
 
    describe "timeStamp parser" $ do
 
@@ -44,7 +46,7 @@ main = hspec $ do
          timeStamp `failsOn` "04.01.2016error 04:04:54,407"
 
 succeedsOn :: Show a => Parser a -> String -> Expectation
-succeedsOn p s = p `shouldSucceedOn` pack s
+succeedsOn p s = p `shouldSucceedOn` BS.pack s
 
 failsOn :: Show a => Parser a -> String -> Expectation
-failsOn p s = p `shouldFailOn` pack s
+failsOn p s = p `shouldFailOn` BS.pack s
