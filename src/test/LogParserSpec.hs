@@ -37,13 +37,13 @@ main = hspec $ do
    describe "timeStamp parser" $ do
 
       it "succeeds on correct dateTime" $
-         timeStamp `succeedsOn` "04.01.2016 04:04:54,407"
+         dateTime `succeedsOn` "04.01.2016 04:04:54,407"
 
       it "succeeds on correct dateTime with appendix" $
-         timeStamp `succeedsOn` "04.01.2016 04:04:54,407appendix"
+         dateTime `succeedsOn` "04.01.2016 04:04:54,407appendix"
 
       it "fails on wrong dateTime" $
-         timeStamp `failsOn` "04.01.2016error 04:04:54,407"
+         dateTime `failsOn` "04.01.2016error 04:04:54,407"
 
 succeedsOn :: Show a => Parser a -> String -> Expectation
 succeedsOn p s = p `shouldSucceedOn` BS.pack s

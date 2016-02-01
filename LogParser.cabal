@@ -13,7 +13,8 @@ library
    exposed-modules:     LogParser
    build-depends:       base,
                         attoparsec,
-                        time
+                        time,
+                        bytestring
    hs-source-dirs:      src\lib
    ghc-options:         -Wall -fno-warn-unused-do-bind
    default-language:    Haskell2010
